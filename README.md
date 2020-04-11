@@ -14,7 +14,7 @@ enable_plugins=host_list,script,auto,yaml,ini,hkwi.xtra.alias,hkwi.xtra.patch
 
 Then you can use extra inventory plugins
 
-`hkwi.xtra.alias` is useful when you're using inventory directory and import common content into that.
+`hkwi.xtra.alias` is useful when you're using inventory directory and import common content into that. Following example imports external `common/base.yml` into `site01/` inventory.
 
 ```site01/00_base.yml
 ---
