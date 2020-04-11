@@ -12,7 +12,7 @@ class InventoryModule(BaseInventoryPlugin):
 	NAME = "alias"
 	
 	def verify_file(self, path):
-		return yaml.safe_load(open(path))["plugin"] == self.NAME
+		return yaml.safe_load(open(path))["plugin"].endswith(self.NAME)
 	
 	def parse(self, inventory, loader, path, cache=True):
 		data = loader.load_from_file(path)

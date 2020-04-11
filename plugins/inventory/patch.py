@@ -38,7 +38,7 @@ class InventoryModule(BaseInventoryPlugin):
 	NAME = "patch"
 	
 	def verify_file(self, path):
-		return yaml.safe_load(open(path))["plugin"] == self.NAME
+		return yaml.safe_load(open(path))["plugin"].endswith(self.NAME)
 	
 	def parse(self, inventory, loader, path, cache=True):
 		for hunk in yaml.safe_load(open(path)).get("patch", []):
