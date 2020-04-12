@@ -1,9 +1,9 @@
 import itertools
 import logging
 import yaml
-import jinja2
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.inventory.helpers import get_group_vars
+from ansible.template import Templar
 
 # plugin: patch
 # 
@@ -43,18 +43,21 @@ class InventoryModule(BaseInventoryPlugin):
 	def parse(self, inventory, loader, path, cache=True):
 		for hunk in yaml.safe_load(open(path)).get("patch", []):
 			try:
-				process_hunk(hunk, inventory)
+				process_hunk(hunk, inventory, loader)
 			except:
 				logging.error("Error in hunk %s" % hunk, exc_info=True)
 				raise
 
-def process_hunk(hunk, inventory):
+def process_hunk(hunk, inventory, loader):
 	name = hunk.get("name", None)
 	args = generate_template_vars(inventory, name)
 	
+	templar = Templar(loader=loader, variables=args)
+	templar.environment = templar.environment.overlay(trim_blocks=False)
+	
 	def template_leaf(obj):
 		if isinstance(obj, str):
-			return jinja2.Template(obj).render(**args)
+			return templar.template(obj)
 		elif isinstance(obj, list):
 			return [template_leaf(o) for o in obj]
 		elif isinstance(obj, dict):
@@ -80,34 +83,39 @@ def process_hunk(hunk, inventory):
 		else:
 			set_variable(inventory, name, data, args["groupvars"].get(name))
 	
-	elif "block" in hunk:
-		block = hunk.get("block", None)
-		
-		if block is None:
-			data = None
-		elif isinstance(block, str):
-			data = yaml.safe_load(template_leaf(block))
-		elif isinstance(block, dict):
-			data = template_leaf(block)
+	else:
+		if "block" in hunk:
+			block = hunk.get("block", None)
+			
+			if block is None:
+				data = None
+			elif isinstance(block, str):
+				data = yaml.safe_load(template_leaf(block))
+			elif isinstance(block, dict):
+				data = template_leaf(block)
+			else:
+				assert False, "unexpected block %s" % c
+		elif "src" in hunk:
+			src = os.path.abspath(os.path.join(os.path.dirname(path), hunk["src"]))
+			data = yaml.safe_load(template_leaf(open(src).read()))
 		else:
-			assert False, "unexpected block %s" % c
+			assert False, "block or src required"
 		
 		if name is None:
 			assert isinstance(data, dict)
 			for g,d in data.items():
 				set_group_hunk(inventory, g, d, args)
 		elif name in inventory.hosts:
-			set_value(inventory, name, data, args["hostvars"].get(name))
+			set_variable(inventory, name, data, args["hostvars"].get(name))
 		else:
 			if name not in inventory.groups:
 				inventory.add_group(name)
 			if isinstance(data, dict):
 				set_group_hunk(inventory, name, data, args)
-
+	
 
 def generate_template_vars(inventory, name=None):
-	groups = {k: [h.name for h in v.hosts]
-		for k,v in inventory.groups.items()}
+	groups = inventory.get_groups_dict()
 	groups["all"] = inventory.hosts
 	
 	hostvars = {}
