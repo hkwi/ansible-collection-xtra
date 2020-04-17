@@ -40,3 +40,25 @@ patch:
       {% endif %}{% endfor %}
 ```
 
+`hkwi.xtra.nib` is network domain specific. This plugin creates nib (network information base) hostvar.
+
+```
+---
+# this is header section
+plugin: hkwi.xtra.nib
+
+---
+cidr: 192.168.0.0/24
+ipaddr:
+- value: 192.168.0.1
+  host: rt01
+  iface: eth0
+
+---
+cidr: 192.168.1.0/24
+ipaddr:
+- value: 192.168.1.1
+  host: rt01
+  iface: eth1
+
+```
