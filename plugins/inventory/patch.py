@@ -157,6 +157,8 @@ def set_group_hunk(inventory, group, data, args):
 		return
 	assert isinstance(data,dict) 
 	
+	inventory.add_group(group)
+	
 	hosts = data.get("hosts")
 	if isinstance(hosts, dict):
 		for name,vars in hosts.items():
