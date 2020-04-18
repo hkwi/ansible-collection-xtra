@@ -41,7 +41,7 @@ Network data structure in turtle format will be as following:
 
 ```
 [] rdf:type Segment ;
-   rdf:value "192.168.0.0/24" ;
+   rdf:label "segment name" :
    cidr "192.168.0.0/24" ;
    ipaddr [ rdf:type IPv4Address ;
             rdf:value "192.168.0.1" ;
@@ -62,7 +62,6 @@ We translate this into yaml representation.
 ```
 ---
 type: Segment
-value: 192.168.0.0/24
 cidr: 192.168.0.0/24
 ipaddr:
 - type: IPv4Address
@@ -78,7 +77,7 @@ ipaddr:
         label: localhost
 ```
 
-Rule1. If the type was obvious from property, we can drop it.
+Rule1. If the type was obvious from property, we can drop type property.
 
 ```
 ---
@@ -138,7 +137,6 @@ nib:
 plugin: hkwi.xtra.nib
 ---
 label: segment0
-value: 192.168.0.0/24
 cidr: 192.168.0.0/24
 ipaddr:
 - value: 192.168.0.1
@@ -152,7 +150,6 @@ ipaddr:
   host: external2
 ---
 label: segment1
-value: 192.168.1.0/24
 cidr: 192.168.1.0/24
 ipaddr:
 - value: 192.168.1.1

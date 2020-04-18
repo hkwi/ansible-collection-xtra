@@ -43,7 +43,7 @@ prop_key=dict(
 	segment="label",
 	ipaddr="value",
 	lladdr="value",
-	iface="value",
+	iface="label",
 	host="label",
 )
 
