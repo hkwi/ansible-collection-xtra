@@ -81,6 +81,8 @@ def process_hunk(hunk, inventory, loader):
 		if name in inventory.hosts:
 			set_variable(inventory, name, data, args["hostvars"].get(name))
 		else:
+			if name not in inventory.groups:
+				inventory.add_group(name)
 			set_variable(inventory, name, data, args["groupvars"].get(name))
 	
 	else:
