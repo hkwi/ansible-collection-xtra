@@ -38,10 +38,10 @@ class InventoryModule(BaseInventoryPlugin):
 	NAME = "patch"
 	
 	def verify_file(self, path):
-		return yaml.safe_load(open(path))["plugin"].endswith(self.NAME)
+		return yaml.safe_load(open(path, encoding="UTF-8"))["plugin"].endswith(self.NAME)
 	
 	def parse(self, inventory, loader, path, cache=True):
-		for hunk in yaml.safe_load(open(path)).get("patch", []):
+		for hunk in yaml.safe_load(open(path, encoding="UTF-8")).get("patch", []):
 			try:
 				process_hunk(hunk, inventory, loader)
 			except:
@@ -99,7 +99,7 @@ def process_hunk(hunk, inventory, loader):
 				assert False, "unexpected block %s" % c
 		elif "src" in hunk:
 			src = os.path.abspath(os.path.join(os.path.dirname(path), hunk["src"]))
-			data = yaml.safe_load(template_leaf(open(src).read()))
+			data = yaml.safe_load(template_leaf(open(src, encoding="UTF-8").read()))
 		else:
 			assert False, "block or src required"
 		

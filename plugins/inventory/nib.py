@@ -11,11 +11,11 @@ class InventoryModule(BaseInventoryPlugin):
 	NAME = "nib"
 	
 	def verify_file(self, path):
-		for doc in yaml.safe_load_all(open(path)):
+		for doc in yaml.safe_load_all(open(path, encoding="UTF-8")):
 			return doc["plugin"].endswith(self.NAME)
 	
 	def parse(self, inventory, loader, path, cache=True):
-		data = list(yaml.safe_load_all(open(path)))
+		data = list(yaml.safe_load_all(open(path, encoding="UTF-8")))
 		assert len(data) > 0
 		
 		nibs = {}
