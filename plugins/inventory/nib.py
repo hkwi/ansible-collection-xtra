@@ -102,9 +102,9 @@ def flatten(prop, data, base={}):
 		for p in prop_key:
 			if p in vn:
 				vs = normalize(p, vn[p])
-				if len(vs) > 1:
+				if isinstance(vn[p], list):
 					vars.append([(p,v) for v in vs])
-				elif len(vs) == 1:
+				else:
 					cur[p] = vs[0]
 		
 		if len(vars)==0:
