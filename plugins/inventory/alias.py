@@ -1,6 +1,7 @@
 import logging
 import yaml
 import os.path
+from io import open
 from ansible.plugins.loader import inventory_loader
 from ansible.plugins.inventory import BaseInventoryPlugin
 

@@ -1,6 +1,7 @@
 import itertools
 import logging
 import yaml
+from io import open
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.inventory.helpers import get_group_vars
 from ansible.template import Templar
