@@ -97,7 +97,7 @@ def process_hunk(hunk, inventory, loader):
 			elif isinstance(block, dict):
 				data = template_leaf(block)
 			else:
-				assert False, "unexpected block %s" % c
+				assert False, "unexpected block %s" % block
 		elif "src" in hunk:
 			src = os.path.abspath(os.path.join(os.path.dirname(path), hunk["src"]))
 			data = yaml.safe_load(template_leaf(open(src, encoding="UTF-8").read()))
