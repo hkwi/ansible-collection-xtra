@@ -6,6 +6,11 @@ from ansible.inventory.helpers import get_group_vars
 from ansible.plugins.loader import inventory_loader
 from ansible.plugins.inventory import BaseInventoryPlugin
 
+try:
+	string_type = basestring
+except:
+	string_type = str
+
 # plugin: hkwi.xtra.nib
 
 class InventoryModule(BaseInventoryPlugin):
@@ -49,7 +54,7 @@ prop_key=dict(
 )
 
 def dict_box(data, key):
-	if isinstance(data, str):
+	if isinstance(data, string_type):
 		return {key:data}
 	elif isinstance(data, dict):
 		assert key in data, "key=%s, data=%s" % (key, data)
@@ -62,7 +67,7 @@ def normalize(prop, obj):
 	key = prop_key[prop]
 	if obj is None:
 		return []
-	elif isinstance(obj, (str, dict)):
+	elif isinstance(obj, (string_type, dict)):
 		return [dict_box(obj, key)]
 	elif isinstance(obj, list):
 		return [dict_box(o, key) for o in obj]

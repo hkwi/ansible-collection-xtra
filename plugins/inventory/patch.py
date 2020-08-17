@@ -6,6 +6,11 @@ from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.inventory.helpers import get_group_vars
 from ansible.template import Templar
 
+try:
+	string_type = basestring
+except NameError:
+	string_type = str
+
 # plugin: patch
 # 
 # patch:
@@ -57,7 +62,7 @@ def process_hunk(hunk, inventory, loader):
 	templar.environment = templar.environment.overlay(trim_blocks=False)
 	
 	def template_leaf(obj):
-		if isinstance(obj, str):
+		if isinstance(obj, string_type):
 			return templar.template(obj)
 		elif isinstance(obj, list):
 			return [template_leaf(o) for o in obj]
@@ -72,7 +77,7 @@ def process_hunk(hunk, inventory, loader):
 		
 		if vars is None:
 			data = None
-		elif isinstance(vars, str):
+		elif isinstance(vars, string_type):
 			data = yaml.safe_load(template_leaf(vars))
 		elif isinstance(vars, dict):
 			data = template_leaf(vars)
@@ -92,7 +97,7 @@ def process_hunk(hunk, inventory, loader):
 			
 			if block is None:
 				data = None
-			elif isinstance(block, str):
+			elif isinstance(block, string_type):
 				data = yaml.safe_load(template_leaf(block))
 			elif isinstance(block, dict):
 				data = template_leaf(block)
